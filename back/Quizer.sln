@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{31BA8FF8-C9C2-4A69-A0B4-0F63524E878A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{39AD00B5-507C-4EFA-B2DC-31033E5BDA54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizer.UnitTests", "test\Quizer.UnitTests\Quizer.UnitTests.csproj", "{2F620A47-622A-44C0-8784-183AA19E5397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizer", "src\Quizer\Quizer.csproj", "{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizer.Infrastructure", "src\Quizer.Infrastructure\Quizer.Infrastructure.csproj", "{97AF60CB-8652-43E2-9249-125FA063183A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizer.Web", "src\Quizer.Web\Quizer.Web.csproj", "{E55B5913-9336-447B-9C04-7919C327DC6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quizer.Controllers", "src\Quizer.Controllers\Quizer.Controllers.csproj", "{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2F620A47-622A-44C0-8784-183AA19E5397} = {39AD00B5-507C-4EFA-B2DC-31033E5BDA54}
+		{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3} = {31BA8FF8-C9C2-4A69-A0B4-0F63524E878A}
+		{97AF60CB-8652-43E2-9249-125FA063183A} = {31BA8FF8-C9C2-4A69-A0B4-0F63524E878A}
+		{E55B5913-9336-447B-9C04-7919C327DC6B} = {31BA8FF8-C9C2-4A69-A0B4-0F63524E878A}
+		{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1} = {31BA8FF8-C9C2-4A69-A0B4-0F63524E878A}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F620A47-622A-44C0-8784-183AA19E5397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F620A47-622A-44C0-8784-183AA19E5397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F620A47-622A-44C0-8784-183AA19E5397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F620A47-622A-44C0-8784-183AA19E5397}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB6A1A7A-378B-453A-9AC4-4EDB4B4A34E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97AF60CB-8652-43E2-9249-125FA063183A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97AF60CB-8652-43E2-9249-125FA063183A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97AF60CB-8652-43E2-9249-125FA063183A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97AF60CB-8652-43E2-9249-125FA063183A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E55B5913-9336-447B-9C04-7919C327DC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E55B5913-9336-447B-9C04-7919C327DC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E55B5913-9336-447B-9C04-7919C327DC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E55B5913-9336-447B-9C04-7919C327DC6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A72C29BD-7CC4-4534-B440-1E5AE8EAB9E1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
