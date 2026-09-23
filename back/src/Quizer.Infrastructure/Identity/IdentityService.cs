@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Quizer.Abstractions.Auth;
+using Quizer.Common;
 
 namespace Quizer.Infrastructure.Identity;
 
@@ -27,7 +28,7 @@ public class IdentityService(
         var result = await userManager.CreateAsync(user, password);
         if (!result.Succeeded)
         {
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 $"Не удалось зарегистрировать пользователя: {string.Join(", ", result.Errors.Select(e => e.Description))}");
         }
 
@@ -37,12 +38,12 @@ public class IdentityService(
     public async Task<string> AuthorizeAsync(string email, string password, CancellationToken cancellationToken = default)
     {
         var user = await userManager.FindByEmailAsync(email)
-                   ?? throw new InvalidOperationException("Пользователь с указанным email не найден.");
+                   ?? throw new UnauthorizedException("Пользователь с указанным email не найден.");
 
         var isValidPassword = await userManager.CheckPasswordAsync(user, password);
         if (!isValidPassword)
         {
-            throw new InvalidOperationException("Неверный пароль.");
+            throw new UnauthorizedException("Неверный пароль.");
         }
 
         return GenerateToken(user);

@@ -16,7 +16,9 @@ builder.Services.AddQuizer();
 builder.Services.AddPostgresSqlStorage(builder.Configuration["App:DbConnectionString"]!);
 builder.Services.AddIdentityPostgresSqlStorage(builder.Configuration["App:IdentityDbConnectionString"]!);
 
-builder.Services.AddAuthenticationScheme(builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!);
+var jwtOptionsSection = builder.Configuration.GetSection("Jwt");
+builder.Services.Configure<JwtOptions>(jwtOptionsSection);
+builder.Services.AddAuthenticationScheme(jwtOptionsSection.Get<JwtOptions>()!);
 
 builder.Services.AddControllersLayer();
 builder.Services.AddOpenApi();

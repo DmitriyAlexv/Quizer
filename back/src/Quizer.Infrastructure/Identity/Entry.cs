@@ -17,7 +17,12 @@ public static class Entry
         services.AddDbContext<QuizerIdentityDbContext>(options =>
             options.UseNpgsql(connectionString));
 
-        services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>()
+        services.AddIdentity<IdentityUser<Guid>, IdentityRole<Guid>>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.User.RequireUniqueEmail = true;
+            })
             .AddEntityFrameworkStores<QuizerIdentityDbContext>()
             .AddDefaultTokenProviders();
 
