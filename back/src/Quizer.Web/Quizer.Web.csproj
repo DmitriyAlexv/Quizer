@@ -8,6 +8,16 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Quizer\Quizer.csproj"/>
+        <ProjectReference Include="..\Quizer.Controllers\Quizer.Controllers.csproj"/>
+        <ProjectReference Include="..\Quizer.Infrastructure\Quizer.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>
