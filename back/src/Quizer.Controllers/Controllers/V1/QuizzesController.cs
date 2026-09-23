@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Quizer.Abstractions.Pagination;
 using Quizer.Controllers.Contracts.Common;
@@ -30,6 +32,7 @@ using Quizer.UseCases.Queries.GetQuizzes;
 namespace Quizer.Controllers.Controllers.V1;
 
 [ApiController]
+[Authorize]
 [Route("api/v1/quizzes")]
 public class QuizzesController : ControllerBase
 {
@@ -71,7 +74,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var id = await _mediator.Send(
-            new CreateQuizCommand(request.Title, request.Description, request.OwnerId),
+            new CreateQuizCommand(request.Title, request.Description, GetCurrentUserId()),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetQuiz), new { id }, id);
@@ -263,10 +266,9 @@ public class QuizzesController : ControllerBase
     [HttpPost("{quizId:guid}/attempts")]
     public async Task<ActionResult<AttemptResponse>> CreateAttempt(
         Guid quizId,
-        [FromBody] CreateAttemptRequest request,
         CancellationToken cancellationToken = default)
     {
-        var attempt = await _mediator.Send(new CreateAttemptCommand(quizId, request.UserId), cancellationToken);
+        var attempt = await _mediator.Send(new CreateAttemptCommand(quizId, GetCurrentUserId()), cancellationToken);
         return CreatedAtAction(nameof(GetAttempt), new { quizId, attemptId = attempt.Id }, MapAttempt(attempt));
     }
 
@@ -306,6 +308,14 @@ public class QuizzesController : ControllerBase
     {
         var result = await _mediator.Send(new GetLeaderboardQuery(id, limit), cancellationToken);
         return Ok(result.Select(e => new LeaderboardEntryResponse(e.UserId, e.UserName, e.Score, e.CompletedAt)).ToList());
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                          ?? throw new UnauthorizedAccessException("Не удалось определить идентификатор пользователя из токена.");
+
+        return Guid.Parse(userIdClaim);
     }
 
     private static PagedResponse<TResponse> MapPaged<TEntity, TResponse>(

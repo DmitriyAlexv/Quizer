@@ -1,4 +1,3 @@
-using Quizer.QuizAggregate;
 using Quizer.QuizAggregate.Enums;
 
 namespace Quizer.Controllers.Contracts.Quizzes.V1;
