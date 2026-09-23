@@ -4,6 +4,7 @@ using Quizer.Controllers;
 using Quizer.Infrastructure.Auth;
 using Quizer.Infrastructure.Data;
 using Quizer.Infrastructure.Identity;
+using Quizer.Web.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

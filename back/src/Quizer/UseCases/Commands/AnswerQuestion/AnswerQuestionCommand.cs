@@ -8,4 +8,5 @@ public record AnswerQuestionCommand(
     Guid AttemptId,
     Guid QuestionId,
     string? TextAnswer,
-    IEnumerable<Guid>? SelectedAnswerIds) : IRequest<AttemptAnswer>;
+    IEnumerable<Guid>? SelectedAnswerIds,
+    Guid UserId) : IRequest<AttemptAnswer>;

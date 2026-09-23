@@ -7,4 +7,5 @@ public record AddAnswerCommand(
     Guid QuizId,
     Guid QuestionId,
     string Text,
-    bool IsCorrect) : IRequest<Answer>;
+    bool IsCorrect,
+    Guid OwnerId) : IRequest<Answer>;

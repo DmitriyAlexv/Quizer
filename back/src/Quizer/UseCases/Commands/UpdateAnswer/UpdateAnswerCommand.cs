@@ -7,4 +7,5 @@ public record UpdateAnswerCommand(
     Guid QuestionId,
     Guid AnswerId,
     string Text,
-    bool IsCorrect) : IRequest;
+    bool IsCorrect,
+    Guid OwnerId) : IRequest;
