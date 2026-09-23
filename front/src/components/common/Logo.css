@@ -1,0 +1,37 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+}
+
+.logo__mark {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.logo__text {
+  font: 700 22px/1 var(--heading);
+  letter-spacing: -0.4px;
+  color: var(--text-h);
+}
+
+.logo--sm .logo__mark {
+  width: 30px;
+  height: 30px;
+}
+
+.logo--sm .logo__text {
+  font-size: 18px;
+}
+
+.logo--lg .logo__mark {
+  width: 52px;
+  height: 52px;
+}
+
+.logo--lg .logo__text {
+  font-size: 28px;
+}
