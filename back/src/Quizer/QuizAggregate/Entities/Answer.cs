@@ -1,0 +1,32 @@
+using Quizer.Common;
+
+namespace Quizer.QuizAggregate.Entities;
+
+/// <summary>
+/// Вариант ответа для вопроса с выбором вариантов.
+/// </summary>
+public class Answer : Entity
+{
+    public string Text { get; private set; }
+
+    public bool IsCorrect { get; private set; }
+
+    private Answer() : this(string.Empty, false)
+    {
+    }
+
+    /// <summary>
+    /// Вариант ответа для вопроса с выбором вариантов.
+    /// </summary>
+    public Answer(string text, bool isCorrect)
+    {
+        Text = text;
+        IsCorrect = isCorrect;
+    }
+
+    public void Update(string text, bool isCorrect)
+    {
+        Text = text;
+        IsCorrect = isCorrect;
+    }
+}
