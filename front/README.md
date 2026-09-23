@@ -1,75 +1,64 @@
-# React + TypeScript + Vite
+# Quizer — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Фронтенд-часть сервиса **Quizer** (создание и прохождение небольших квизов).
+Реализована как SPA на **React + TypeScript** (сборщик — Vite).
 
-Currently, two official plugins are available:
+## Стек
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- TypeScript
+- Vite
+- React Router (маршрутизация)
+- CSS (отдельные файлы для сложных стилей)
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Структура
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── api/                    # Работа с бэкенд-API
+│   ├── client.ts           # Базовый HTTP-клиент (fetch + обработка ошибок)
+│   └── auth.ts             # Функции авторизации/регистрации
+├── components/
+│   ├── common/             # Общие переиспользуемые компоненты
+│   │   ├── Button.tsx      # Кнопка (primary/secondary/ghost, loading)
+│   │   ├── Input.tsx       # Поле ввода (label, иконка, ошибка, пароль)
+│   │   ├── Logo.tsx        # Логотип Quizer
+│   │   └── Alert.tsx       # Сообщения (ошибка/успех/инфо)
+│   ├── AuthLayout.tsx      # Каркас страниц входа/регистрации
+│   └── ProtectedRoute.tsx  # Защита маршрутов (требует авторизации)
+├── context/
+│   └── AuthContext.tsx     # Состояние авторизации (JWT-токен)
+├── pages/
+│   ├── LoginPage.tsx       # Страница входа
+│   ├── RegisterPage.tsx    # Страница регистрации
+│   └── HomePage.tsx        # Заглушка после входа
+├── App.tsx                 # Маршрутизация
+├── main.tsx                # Точка входа (BrowserRouter + AuthProvider)
+└── index.css               # Дизайн-токены (CSS-переменные)
 ```
+
+## Запуск
+
+```bash
+npm install
+npm run dev
+```
+
+## Конфигурация API
+
+Базовый URL бэкенда задаётся через переменную окружения `VITE_API_URL`
+(по умолчанию — `http://localhost:5097`). Пример — в файле `.env.example`.
+
+## Контракты API
+
+| Метод | Путь                     | Тело запроса                          | Ответ            |
+|-------|--------------------------|---------------------------------------|------------------|
+| POST  | `/api/v1/users/register` | `{ email, password, name }`           | `Guid` (userId)  |
+| POST  | `/api/v1/users/authorize`| `{ email, password }`                 | `{ token }`      |
+
+## Скрипты
+
+- `npm run dev` — запуск dev-сервера
+- `npm run build` — сборка для продакшена
+- `npm run lint` — проверка линтером
+- `npm run preview` — предпросмотр собранной версии
