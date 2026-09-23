@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Quizer.QuizAggregate;
 using Quizer.QuizAggregate.Entities;
 
 namespace Quizer.Infrastructure.Data.Quiz.Configurations;

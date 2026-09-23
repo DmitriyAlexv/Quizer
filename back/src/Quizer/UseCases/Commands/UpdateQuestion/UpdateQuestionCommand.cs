@@ -9,4 +9,5 @@ public record UpdateQuestionCommand(
     string Text,
     QuestionType Type,
     int Order,
-    int Points) : IRequest;
+    int Points,
+    Guid OwnerId) : IRequest;

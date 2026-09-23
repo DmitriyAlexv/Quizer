@@ -8,4 +8,5 @@ public record AddQuestionCommand(
     string Text,
     QuestionType Type,
     int Order,
-    int Points) : IRequest<Guid>;
+    int Points,
+    Guid OwnerId) : IRequest<Guid>;

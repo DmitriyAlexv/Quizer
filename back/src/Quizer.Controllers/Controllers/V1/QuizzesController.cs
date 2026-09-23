@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Quizer.Abstractions.Pagination;
 using Quizer.Controllers.Contracts.Common;
@@ -30,6 +32,7 @@ using Quizer.UseCases.Queries.GetQuizzes;
 namespace Quizer.Controllers.Controllers.V1;
 
 [ApiController]
+[Authorize]
 [Route("api/v1/quizzes")]
 public class QuizzesController : ControllerBase
 {
@@ -71,7 +74,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var id = await _mediator.Send(
-            new CreateQuizCommand(request.Title, request.Description, request.OwnerId),
+            new CreateQuizCommand(request.Title, request.Description, GetCurrentUserId()),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetQuiz), new { id }, id);
@@ -84,7 +87,7 @@ public class QuizzesController : ControllerBase
         [FromBody] UpdateQuizRequest request,
         CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new UpdateQuizCommand(id, request.Title, request.Description), cancellationToken);
+        await _mediator.Send(new UpdateQuizCommand(id, request.Title, request.Description, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -92,7 +95,7 @@ public class QuizzesController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteQuiz(Guid id, CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new DeleteQuizCommand(id), cancellationToken);
+        await _mediator.Send(new DeleteQuizCommand(id, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -100,7 +103,7 @@ public class QuizzesController : ControllerBase
     [HttpPatch("{id:guid}/publish")]
     public async Task<IActionResult> PublishQuiz(Guid id, CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new PublishQuizCommand(id), cancellationToken);
+        await _mediator.Send(new PublishQuizCommand(id, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -140,7 +143,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var id = await _mediator.Send(
-            new AddQuestionCommand(quizId, request.Text, request.Type, request.Order, request.Points),
+            new AddQuestionCommand(quizId, request.Text, request.Type, request.Order, request.Points, GetCurrentUserId()),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetQuestion), new { quizId, questionId = id }, id);
@@ -155,7 +158,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         await _mediator.Send(
-            new UpdateQuestionCommand(quizId, questionId, request.Text, request.Type, request.Order, request.Points),
+            new UpdateQuestionCommand(quizId, questionId, request.Text, request.Type, request.Order, request.Points, GetCurrentUserId()),
             cancellationToken);
 
         return NoContent();
@@ -168,7 +171,7 @@ public class QuizzesController : ControllerBase
         Guid questionId,
         CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new DeleteQuestionCommand(quizId, questionId), cancellationToken);
+        await _mediator.Send(new DeleteQuestionCommand(quizId, questionId, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -181,7 +184,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var answer = await _mediator.Send(
-            new AddAnswerCommand(quizId, questionId, request.Text, request.IsCorrect),
+            new AddAnswerCommand(quizId, questionId, request.Text, request.IsCorrect, GetCurrentUserId()),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetQuestion), new { quizId, questionId }, MapAnswer(answer));
@@ -197,7 +200,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         await _mediator.Send(
-            new UpdateAnswerCommand(quizId, questionId, answerId, request.Text, request.IsCorrect),
+            new UpdateAnswerCommand(quizId, questionId, answerId, request.Text, request.IsCorrect, GetCurrentUserId()),
             cancellationToken);
 
         return NoContent();
@@ -211,7 +214,7 @@ public class QuizzesController : ControllerBase
         Guid answerId,
         CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new RemoveAnswerCommand(quizId, questionId, answerId), cancellationToken);
+        await _mediator.Send(new RemoveAnswerCommand(quizId, questionId, answerId, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -263,10 +266,9 @@ public class QuizzesController : ControllerBase
     [HttpPost("{quizId:guid}/attempts")]
     public async Task<ActionResult<AttemptResponse>> CreateAttempt(
         Guid quizId,
-        [FromBody] CreateAttemptRequest request,
         CancellationToken cancellationToken = default)
     {
-        var attempt = await _mediator.Send(new CreateAttemptCommand(quizId, request.UserId), cancellationToken);
+        var attempt = await _mediator.Send(new CreateAttemptCommand(quizId, GetCurrentUserId()), cancellationToken);
         return CreatedAtAction(nameof(GetAttempt), new { quizId, attemptId = attempt.Id }, MapAttempt(attempt));
     }
 
@@ -280,7 +282,7 @@ public class QuizzesController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var answer = await _mediator.Send(
-            new AnswerQuestionCommand(quizId, attemptId, questionId, request.TextAnswer, request.SelectedAnswerIds),
+            new AnswerQuestionCommand(quizId, attemptId, questionId, request.TextAnswer, request.SelectedAnswerIds, GetCurrentUserId()),
             cancellationToken);
 
         return Ok(MapAttemptAnswer(answer));
@@ -293,7 +295,7 @@ public class QuizzesController : ControllerBase
         Guid attemptId,
         CancellationToken cancellationToken = default)
     {
-        await _mediator.Send(new CompleteAttemptCommand(quizId, attemptId), cancellationToken);
+        await _mediator.Send(new CompleteAttemptCommand(quizId, attemptId, GetCurrentUserId()), cancellationToken);
         return NoContent();
     }
 
@@ -306,6 +308,14 @@ public class QuizzesController : ControllerBase
     {
         var result = await _mediator.Send(new GetLeaderboardQuery(id, limit), cancellationToken);
         return Ok(result.Select(e => new LeaderboardEntryResponse(e.UserId, e.UserName, e.Score, e.CompletedAt)).ToList());
+    }
+
+    private Guid GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                          ?? throw new UnauthorizedAccessException("Не удалось определить идентификатор пользователя из токена.");
+
+        return Guid.Parse(userIdClaim);
     }
 
     private static PagedResponse<TResponse> MapPaged<TEntity, TResponse>(
