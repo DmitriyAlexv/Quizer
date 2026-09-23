@@ -13,8 +13,8 @@ builder.Configuration.AddUserSecrets("02e57bcf-ebc7-4b27-b2cf-4b2473fdc067");
 // Add services to the container.
 builder.Services.AddQuizer();
 
-builder.Services.AddPostgresSqlStorage(builder.Configuration["App:DbConnectionStrings"]!);
-builder.Services.AddIdentityPostgresSqlStorage(builder.Configuration["App:IdentityDbConnectionStrings"]!);
+builder.Services.AddPostgresSqlStorage(builder.Configuration["App:DbConnectionString"]!);
+builder.Services.AddIdentityPostgresSqlStorage(builder.Configuration["App:IdentityDbConnectionString"]!);
 
 builder.Services.AddAuthenticationScheme(builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!);
 
