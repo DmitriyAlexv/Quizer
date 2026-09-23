@@ -1,0 +1,68 @@
+.app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.app__header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.app__header-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.app__logo-link {
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.app__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-right: auto;
+}
+
+.app__nav-link {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font: 500 14.5px/1 var(--sans);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.app__nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text-h);
+}
+
+.app__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+@media (max-width: 640px) {
+  .app__header-inner {
+    padding: 14px 20px;
+  }
+
+  .app__main {
+    padding: 20px;
+  }
+}

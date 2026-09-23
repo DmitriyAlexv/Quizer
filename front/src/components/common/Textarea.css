@@ -1,0 +1,37 @@
+.field__textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-h);
+  font: 400 15px/1.5 var(--sans);
+  resize: vertical;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.field__textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.field__textarea:hover {
+  border-color: var(--border-strong);
+}
+
+.field__textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.field--error .field__textarea {
+  border-color: var(--danger);
+}
+
+.field--error .field__textarea:focus {
+  box-shadow: 0 0 0 4px var(--danger-soft);
+}
