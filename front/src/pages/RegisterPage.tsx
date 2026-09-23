@@ -44,8 +44,16 @@ export function RegisterPage() {
 
     if (!password) {
       next.password = 'Введите пароль';
-    } else if (password.length < 6) {
-      next.password = 'Пароль должен содержать минимум 6 символов';
+    } else if (password.length < 8) {
+      next.password = 'Пароль должен содержать минимум 8 символов';
+    } else if (!/[0-9]/.test(password)) {
+      next.password = 'Пароль должен содержать минимум 1 цифру';
+    } else if (!/[A-Z]/.test(password)) {
+      next.password = 'Пароль должен содержать минимум 1 заглавную букву';
+    } else if (!/[a-z]/.test(password)) {
+      next.password = 'Пароль должен содержать минимум 1 строчную букву';
+    } else if (!/[^\p{L}\p{N}\s]/u.test(password)) {
+      next.password = 'Пароль должен содержать минимум 1 специальный символ';
     }
 
     if (!confirmPassword) {
@@ -110,7 +118,7 @@ export function RegisterPage() {
         <Input
           label="Пароль"
           password
-          placeholder="Минимум 6 символов"
+          placeholder="Минимум 8 символов"
           autoComplete="new-password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
