@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Quizer.Controllers.Contracts.Users.V1;
 using Quizer.UseCases.Commands.AuthorizeUser;
@@ -6,6 +7,9 @@ using Quizer.UseCases.Commands.RegisterUser;
 
 namespace Quizer.Controllers.Controllers.V1;
 
+/// <summary>
+/// Управление пользователями: регистрация и авторизация.
+/// </summary>
 [ApiController]
 [Route("api/v1/users")]
 public class UsersController : ControllerBase
@@ -17,8 +21,19 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
-    // POST api/v1/users/register
+    /// <summary>
+    /// Зарегистрировать нового пользователя.
+    /// </summary>
+    /// <param name="request">Данные для регистрации пользователя.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Идентификатор созданного пользователя.</returns>
+    /// <response code="200">Пользователь успешно зарегистрирован.</response>
+    /// <response code="400">Некорректные данные запроса.</response>
+    /// <response code="409">Пользователь с таким email уже существует.</response>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult<Guid>> Register(
         [FromBody] RegisterRequest request,
         CancellationToken cancellationToken = default)
@@ -30,8 +45,19 @@ public class UsersController : ControllerBase
         return Ok(id);
     }
 
-    // POST api/v1/users/authorize
+    /// <summary>
+    /// Авторизовать пользователя и получить JWT-токен.
+    /// </summary>
+    /// <param name="request">Данные для авторизации пользователя.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>JWT-токен для доступа к защищённым ресурсам.</returns>
+    /// <response code="200">Пользователь успешно авторизован.</response>
+    /// <response code="400">Некорректные данные запроса.</response>
+    /// <response code="401">Неверный email или пароль.</response>
     [HttpPost("authorize")]
+    [ProducesResponseType(typeof(AuthorizeResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<AuthorizeResponse>> Authorize(
         [FromBody] AuthorizeRequest request,
         CancellationToken cancellationToken = default)
