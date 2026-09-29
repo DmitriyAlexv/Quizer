@@ -1,3 +1,4 @@
+using Quizer.Exceptions;
 using Quizer.QuizAggregate.Enums;
 using Quizer.UnitTests.Base;
 
@@ -44,7 +45,7 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.Update("Новый", "Заголовок"));
+        Assert.Throws<ConflictException>(() => quiz.Update("Новый", "Заголовок"));
     }
 
     [Fact]
@@ -100,7 +101,7 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.AddQuestion("Вопрос", QuestionType.Open, 1, 10));
+        Assert.Throws<ConflictException>(() => quiz.AddQuestion("Вопрос", QuestionType.Open, 1, 10));
     }
 
     [Fact]
@@ -142,7 +143,7 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.GetQuestion(Guid.NewGuid()));
+        Assert.Throws<NotFoundException>(() => quiz.GetQuestion(Guid.NewGuid()));
     }
 
     [Fact]
@@ -169,7 +170,7 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.CreateAttempt(Guid.NewGuid()));
+        Assert.Throws<ConflictException>(() => quiz.CreateAttempt(Guid.NewGuid()));
     }
 
     [Fact]
@@ -200,7 +201,7 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.CreateAttempt(userId));
+        Assert.Throws<ConflictException>(() => quiz.CreateAttempt(userId));
     }
 
     [Fact]
@@ -211,6 +212,6 @@ public class QuizTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => quiz.GetAttempt(Guid.NewGuid()));
+        Assert.Throws<NotFoundException>(() => quiz.GetAttempt(Guid.NewGuid()));
     }
 }

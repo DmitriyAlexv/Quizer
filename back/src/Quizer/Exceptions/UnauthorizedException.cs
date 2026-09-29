@@ -1,4 +1,4 @@
-namespace Quizer.Common;
+namespace Quizer.Exceptions;
 
 /// <summary>
 /// Исключение, возникающее при неудачной авторизации пользователя

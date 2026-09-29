@@ -1,5 +1,6 @@
 using MediatR;
 using Quizer.Abstractions.Data;
+using Quizer.Exceptions;
 using Quizer.QuizAggregate;
 using Quizer.QuizAggregate.Entities;
 
@@ -12,7 +13,7 @@ public class CreateAttemptCommandHandler(
     public async Task<Attempt> Handle(CreateAttemptCommand request, CancellationToken cancellationToken)
     {
         var quiz = await quizRepository.GetByIdAsync(request.QuizId, cancellationToken)
-                   ?? throw new InvalidOperationException($"Квиз с id {request.QuizId} не найден.");
+                   ?? throw new NotFoundException($"Квиз с id {request.QuizId} не найден.");
 
         var attempt = quiz.CreateAttempt(request.UserId);
         quizRepository.Update(quiz);

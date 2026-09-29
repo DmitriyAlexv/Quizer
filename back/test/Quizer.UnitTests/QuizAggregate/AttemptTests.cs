@@ -1,3 +1,4 @@
+using Quizer.Exceptions;
 using Quizer.QuizAggregate.Entities;
 using Quizer.QuizAggregate.Enums;
 using Quizer.UnitTests.Base;
@@ -72,7 +73,7 @@ public class AttemptTests : TestBase
 
         // Act
         // Assert
-        Assert.Throws<InvalidOperationException>(() => attempt.AnswerQuestion(question!, "Ответ", null));
+        Assert.Throws<ConflictException>(() => attempt.AnswerQuestion(question!, "Ответ", null));
     }
 
     [Fact]
