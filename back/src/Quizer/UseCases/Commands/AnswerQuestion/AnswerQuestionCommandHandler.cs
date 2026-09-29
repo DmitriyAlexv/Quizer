@@ -1,6 +1,6 @@
 using MediatR;
 using Quizer.Abstractions.Data;
-using Quizer.Common;
+using Quizer.Exceptions;
 using Quizer.QuizAggregate;
 using Quizer.QuizAggregate.Entities;
 using Quizer.QuizAggregate.Enums;
@@ -14,7 +14,7 @@ public class AnswerQuestionCommandHandler(
     public async Task<AttemptAnswer> Handle(AnswerQuestionCommand request, CancellationToken cancellationToken)
     {
         var quiz = await quizRepository.GetByIdAsync(request.QuizId, cancellationToken)
-                   ?? throw new InvalidOperationException($"Квиз с id {request.QuizId} не найден.");
+                   ?? throw new NotFoundException($"Квиз с id {request.QuizId} не найден.");
 
         var attempt = quiz.GetAttempt(request.AttemptId);
         EnsureAttemptOwner(attempt, request.UserId);

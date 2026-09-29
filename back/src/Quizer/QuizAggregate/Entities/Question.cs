@@ -1,4 +1,5 @@
 using Quizer.Common;
+using Quizer.Exceptions;
 using Quizer.QuizAggregate.Enums;
 
 namespace Quizer.QuizAggregate.Entities;
@@ -53,7 +54,7 @@ public class Question : Entity
     public Answer GetAnswer(Guid answerId)
     {
         return _answers.FirstOrDefault(a => a.Id == answerId)
-               ?? throw new InvalidOperationException($"Ответ с id {answerId} не найден.");
+               ?? throw new NotFoundException($"Ответ с id {answerId} не найден.");
     }
     
     public void RemoveAnswer(Guid answerId)

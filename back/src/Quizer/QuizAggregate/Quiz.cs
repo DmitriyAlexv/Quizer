@@ -1,4 +1,5 @@
 using Quizer.Common;
+using Quizer.Exceptions;
 using Quizer.QuizAggregate.Entities;
 using Quizer.QuizAggregate.Enums;
 
@@ -115,7 +116,7 @@ public class Quiz : AggregateRoot
     public Question GetQuestion(Guid questionId)
     {
         return _questions.FirstOrDefault(q => q.Id == questionId)
-               ?? throw new InvalidOperationException($"Вопрос с id {questionId} не найден.");
+               ?? throw new NotFoundException($"Вопрос с id {questionId} не найден.");
     }
 
     /// <summary>
@@ -125,12 +126,12 @@ public class Quiz : AggregateRoot
     {
         if (Status != QuizStatus.Published)
         {
-            throw new InvalidOperationException("Нельзя проходить неопубликованный квиз.");
+            throw new ConflictException("Нельзя проходить неопубликованный квиз.");
         }
 
         if (_attempts.Any(a => a.UserId == userId))
         {
-            throw new InvalidOperationException("Пользователь уже проходил этот квиз.");
+            throw new ConflictException("Пользователь уже проходил этот квиз.");
         }
 
         var attempt = new Attempt(Id, userId);
@@ -141,7 +142,7 @@ public class Quiz : AggregateRoot
     public Attempt GetAttempt(Guid attemptId)
     {
         return _attempts.FirstOrDefault(a => a.Id == attemptId)
-               ?? throw new InvalidOperationException($"Попытка с id {attemptId} не найдена.");
+               ?? throw new NotFoundException($"Попытка с id {attemptId} не найдена.");
     }
 
     public AttemptAnswer AnswerQuestion(Guid attemptId, Guid questionId, string? textAnswer, IEnumerable<Guid>? selectedAnswerIds)
@@ -161,7 +162,7 @@ public class Quiz : AggregateRoot
     {
         if (Status == QuizStatus.Published)
         {
-            throw new InvalidOperationException("Нельзя изменять опубликованный квиз.");
+            throw new ConflictException("Нельзя изменять опубликованный квиз.");
         }
     }
 }

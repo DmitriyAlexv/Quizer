@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Quizer.Abstractions.Auth;
-using Quizer.Common;
+using Quizer.Exceptions;
 
 namespace Quizer.Infrastructure.Identity;
 
