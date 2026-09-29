@@ -1,5 +1,3 @@
-using System.Reflection;
-using Microsoft.OpenApi.Models;
 using Quizer;
 using Quizer.Abstractions.Auth;
 using Quizer.Controllers;
@@ -7,6 +5,7 @@ using Quizer.Infrastructure.Auth;
 using Quizer.Infrastructure.Data;
 using Quizer.Infrastructure.Identity;
 using Quizer.Web.Middleware;
+using Quizer.Web.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,62 +25,7 @@ builder.Services.AddControllersLayer();
 
 // Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Quizer API",
-        Version = "v1",
-        Description = "API для платформы квизов: создание квизов, вопросов, ответов, прохождение попыток и получение результатов.",
-        Contact = new OpenApiContact
-        {
-            Name = "Quizer",
-        },
-    });
-
-    // Подключение XML-документации
-    var xmlFiles = new[]
-    {
-        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml",
-        $"{typeof(Quizer.Controllers.Entry).Assembly.GetName().Name}.xml",
-        $"{typeof(Quizer.Entry).Assembly.GetName().Name}.xml",
-    };
-
-    foreach (var xmlFile in xmlFiles)
-    {
-        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-        if (File.Exists(xmlPath))
-        {
-            options.IncludeXmlComments(xmlPath);
-        }
-    }
-
-    // Схема авторизации JWT Bearer
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Введите JWT-токен, полученный при авторизации. Формат: Bearer {token}",
-    });
-
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer",
-                },
-            },
-            Array.Empty<string>()
-        },
-    });
-});
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
