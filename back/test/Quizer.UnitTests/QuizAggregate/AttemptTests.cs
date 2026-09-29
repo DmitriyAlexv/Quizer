@@ -1,5 +1,4 @@
 using Quizer.Exceptions;
-using Quizer.QuizAggregate.Entities;
 using Quizer.QuizAggregate.Enums;
 using Quizer.UnitTests.Base;
 
@@ -11,7 +10,9 @@ public class AttemptTests : TestBase
     public void CreateAttempt_SetsInitialState()
     {
         // Arrange
-        var quiz = CreateQuiz().Published().Build();
+        var quiz = CreateQuiz().Build();
+        quiz.Publish();
+        
         var userId = Guid.NewGuid();
 
         // Act
@@ -29,7 +30,9 @@ public class AttemptTests : TestBase
     public void Complete_SetsStatusToCompleted()
     {
         // Arrange
-        var quiz = CreateQuiz().Published().Build();
+        var quiz = CreateQuiz().Build();
+        quiz.Publish();
+        
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
@@ -44,7 +47,9 @@ public class AttemptTests : TestBase
     public void Complete_WhenAlreadyCompleted_DoesNotThrow()
     {
         // Arrange
-        var quiz = CreateQuiz().Published().Build();
+        var quiz = CreateQuiz().Build();
+        quiz.Publish();
+        
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
         attempt.Complete();
 
@@ -59,40 +64,36 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_OnCompletedAttempt_Throws()
     {
         // Arrange
-        Question? question = null;
-        var quiz = CreateQuiz()
-            .WithQuestion("Вопрос", QuestionType.Open, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Ответ", true);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Вопрос", QuestionType.Open, 1, 10);
+        question.AddAnswer("Ответ", true);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
         attempt.Complete();
 
         // Act
         // Assert
-        Assert.Throws<ConflictException>(() => attempt.AnswerQuestion(question!, "Ответ", null));
+        Assert.Throws<ConflictException>(() => attempt.AnswerQuestion(question, "Ответ", null));
     }
 
     [Fact]
     public void AnswerQuestion_OpenAnswer_Correct_ReturnsCorrect()
     {
         // Arrange
-        Question? question = null;
-        var quiz = CreateQuiz()
-            .WithQuestion("Столица Франции?", QuestionType.Open, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Париж", true);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Столица Франции?", QuestionType.Open, 1, 10);
+        question.AddAnswer("Париж", true);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, "париж", null);
+        var answer = attempt.AnswerQuestion(question, "париж", null);
 
         // Assert
         Assert.True(answer.IsCorrect);
@@ -102,19 +103,17 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_OpenAnswer_Incorrect_ReturnsIncorrect()
     {
         // Arrange
-        Question? question = null;
-        var quiz = CreateQuiz()
-            .WithQuestion("Столица Франции?", QuestionType.Open, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Париж", true);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Столица Франции?", QuestionType.Open, 1, 10);
+        question.AddAnswer("Париж", true);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, "Лондон", null);
+        var answer = attempt.AnswerQuestion(question, "Лондон", null);
 
         // Assert
         Assert.False(answer.IsCorrect);
@@ -124,19 +123,17 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_OpenAnswer_Empty_ReturnsIncorrect()
     {
         // Arrange
-        Question? question = null;
-        var quiz = CreateQuiz()
-            .WithQuestion("Столица Франции?", QuestionType.Open, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Париж", true);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Столица Франции?", QuestionType.Open, 1, 10);
+        question.AddAnswer("Париж", true);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, "", null);
+        var answer = attempt.AnswerQuestion(question, "", null);
 
         // Assert
         Assert.False(answer.IsCorrect);
@@ -146,21 +143,18 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_SingleChoice_Correct_ReturnsCorrect()
     {
         // Arrange
-        Question? question = null;
-        Guid correctId = default;
-        var quiz = CreateQuiz()
-            .WithQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10, q =>
-            {
-                question = q;
-                correctId = q.AddAnswer("Париж", true).Id;
-                q.AddAnswer("Лондон", false);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10);
+        var correctAnswer = question.AddAnswer("Париж", true);
+        question.AddAnswer("Лондон", false);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, null, new[] { correctId });
+        var answer = attempt.AnswerQuestion(question, null, new[] { correctAnswer.Id });
 
         // Assert
         Assert.True(answer.IsCorrect);
@@ -170,21 +164,18 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_SingleChoice_Incorrect_ReturnsIncorrect()
     {
         // Arrange
-        Question? question = null;
-        Guid wrongId = default;
-        var quiz = CreateQuiz()
-            .WithQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Париж", true);
-                wrongId = q.AddAnswer("Лондон", false).Id;
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10);
+        question.AddAnswer("Париж", true);
+        var wrongAnswer = question.AddAnswer("Лондон", false);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, null, new[] { wrongId });
+        var answer = attempt.AnswerQuestion(question, null, new[] { wrongAnswer.Id });
 
         // Assert
         Assert.False(answer.IsCorrect);
@@ -194,22 +185,18 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_SingleChoice_MultipleSelected_ReturnsIncorrect()
     {
         // Arrange
-        Question? question = null;
-        Guid correctId = default;
-        Guid wrongId = default;
-        var quiz = CreateQuiz()
-            .WithQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10, q =>
-            {
-                question = q;
-                correctId = q.AddAnswer("Париж", true).Id;
-                wrongId = q.AddAnswer("Лондон", false).Id;
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Выберите столицу", QuestionType.SingleChoice, 1, 10);
+        var correctAnswer = question.AddAnswer("Париж", true);
+        var wrongAnswer = question.AddAnswer("Лондон", false);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, null, new[] { correctId, wrongId });
+        var answer = attempt.AnswerQuestion(question, null, new[] { correctAnswer.Id, wrongAnswer.Id });
 
         // Assert
         Assert.False(answer.IsCorrect);
@@ -219,23 +206,19 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_MultipleChoice_Correct_ReturnsCorrect()
     {
         // Arrange
-        Question? question = null;
-        Guid parisId = default;
-        Guid londonId = default;
-        var quiz = CreateQuiz()
-            .WithQuestion("Выберите столицы", QuestionType.MultipleChoice, 1, 10, q =>
-            {
-                question = q;
-                parisId = q.AddAnswer("Париж", true).Id;
-                londonId = q.AddAnswer("Лондон", true).Id;
-                q.AddAnswer("Берлин", false);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Выберите столицы", QuestionType.MultipleChoice, 1, 10);
+        var parisAnswer = question.AddAnswer("Париж", true);
+        var londonAnswer = question.AddAnswer("Лондон", true);
+        question.AddAnswer("Берлин", false);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, null, new[] { parisId, londonId });
+        var answer = attempt.AnswerQuestion(question, null, new[] { parisAnswer.Id, londonAnswer.Id });
 
         // Assert
         Assert.True(answer.IsCorrect);
@@ -245,22 +228,19 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_MultipleChoice_Partial_ReturnsIncorrect()
     {
         // Arrange
-        Question? question = null;
-        Guid parisId = default;
-        var quiz = CreateQuiz()
-            .WithQuestion("Выберите столицы", QuestionType.MultipleChoice, 1, 10, q =>
-            {
-                question = q;
-                parisId = q.AddAnswer("Париж", true).Id;
-                q.AddAnswer("Лондон", true);
-                q.AddAnswer("Берлин", false);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Выберите столицы", QuestionType.MultipleChoice, 1, 10);
+        var parisAnswer = question.AddAnswer("Париж", true);
+        question.AddAnswer("Лондон", true);
+        question.AddAnswer("Берлин", false);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        var answer = attempt.AnswerQuestion(question!, null, new[] { parisId });
+        var answer = attempt.AnswerQuestion(question, null, new[] { parisAnswer.Id });
 
         // Assert
         Assert.False(answer.IsCorrect);
@@ -270,20 +250,18 @@ public class AttemptTests : TestBase
     public void AnswerQuestion_ReplacesExistingAnswer()
     {
         // Arrange
-        Question? question = null;
-        var quiz = CreateQuiz()
-            .WithQuestion("Столица Франции?", QuestionType.Open, 1, 10, q =>
-            {
-                question = q;
-                q.AddAnswer("Париж", true);
-            })
-            .Published()
-            .Build();
+        var quiz = CreateQuiz().Build();
+        
+        var question = quiz.AddQuestion("Столица Франции?", QuestionType.Open, 1, 10);
+        question.AddAnswer("Париж", true);
+        
+        quiz.Publish();
+
         var attempt = quiz.CreateAttempt(Guid.NewGuid());
 
         // Act
-        attempt.AnswerQuestion(question!, "Лондон", null);
-        var answer = attempt.AnswerQuestion(question!, "Париж", null);
+        attempt.AnswerQuestion(question, "Лондон", null);
+        var answer = attempt.AnswerQuestion(question, "Париж", null);
 
         // Assert
         Assert.Single(attempt.Answers);
