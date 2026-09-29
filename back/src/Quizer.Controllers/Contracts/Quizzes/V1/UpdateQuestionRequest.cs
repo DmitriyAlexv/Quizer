@@ -5,4 +5,8 @@ namespace Quizer.Controllers.Contracts.Quizzes.V1;
 /// <summary>
 /// Запрос на обновление вопроса квиза.
 /// </summary>
+/// <param name="Text">Текст вопроса.</param>
+/// <param name="Type">Тип вопроса.</param>
+/// <param name="Order">Порядковый номер вопроса в квизе.</param>
+/// <param name="Points">Количество баллов за вопрос.</param>
 public record UpdateQuestionRequest(string Text, QuestionType Type, int Order, int Points);
