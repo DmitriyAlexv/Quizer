@@ -1,4 +1,5 @@
 using Quizer.Common;
+using Quizer.Exceptions;
 using Quizer.QuizAggregate.Enums;
 
 namespace Quizer.QuizAggregate.Entities;
@@ -41,7 +42,7 @@ public class Attempt : Entity
     {
         if (Status != AttemptStatus.InProgress)
         {
-            throw new InvalidOperationException("Нельзя отвечать на вопросы завершённой попытки.");
+            throw new ConflictException("Нельзя отвечать на вопросы завершённой попытки.");
         }
 
         var isCorrect = EvaluateCorrectness(question, textAnswer, selectedAnswerIds);

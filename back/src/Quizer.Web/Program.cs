@@ -5,6 +5,7 @@ using Quizer.Infrastructure.Auth;
 using Quizer.Infrastructure.Data;
 using Quizer.Infrastructure.Identity;
 using Quizer.Web.Middleware;
+using Quizer.Web.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,14 +22,22 @@ builder.Services.Configure<JwtOptions>(jwtOptionsSection);
 builder.Services.AddAuthenticationScheme(jwtOptionsSection.Get<JwtOptions>()!);
 
 builder.Services.AddControllersLayer();
-builder.Services.AddOpenApi();
+
+// Swagger / OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwagger();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Quizer API v1");
+        options.RoutePrefix = "swagger";
+    });
     app.UseMiddleware<DisableCorsMiddleware>();
 }
 

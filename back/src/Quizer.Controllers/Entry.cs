@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using Quizer.Controllers.Filters;
 
 namespace Quizer.Controllers;
 
@@ -10,12 +12,17 @@ public static class Entry
 {
     public static IServiceCollection AddControllersLayer(this IServiceCollection services)
     {
-        services.AddControllers()
+        services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
-        
+
+        services.AddValidatorsFromAssembly(typeof(Entry).Assembly);
+
         return services;
     }
 }

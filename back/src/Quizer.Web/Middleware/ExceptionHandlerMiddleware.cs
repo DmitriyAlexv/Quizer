@@ -1,4 +1,5 @@
-using Quizer.Common;
+using FluentValidation;
+using Quizer.Exceptions;
 
 namespace Quizer.Web.Middleware;
 
@@ -29,10 +30,29 @@ public class ExceptionHandlerMiddleware
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
         }
+        catch (NotFoundException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
+            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
         catch (ConflictException ex)
         {
             context.Response.StatusCode = StatusCodes.Status409Conflict;
             await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+        }
+        catch (ValidationException ex)
+        {
+            var errors = ex.Errors
+                .Select(e => new { field = e.PropertyName, message = e.ErrorMessage })
+                .ToList();
+
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await context.Response.WriteAsJsonAsync(new { errors });
         }
         catch (Exception ex)
         {
